@@ -8,4 +8,4 @@ Map Tracking Sample in Xamarin Forms
 <img width="300" height:"700" src="androidmap.gif" title="Android"/>
 </p>
 
-Blog post: [Exploring Map Tracking UI in Xamarin Forms](http://www.xamboy.com/2019/05/16/rendy-delrosariogmail-com/)
+Blog post: [Exploring Map Tracking UI in Xamarin Forms](http://www.xamboy.com/2019/05/17/exploring-map-tracking-ui-in-xamarin-forms/)
