@@ -99,6 +99,18 @@
     <AndroidResource Include="Resources\drawable-hdpi\ic_taxi.png" />
     <AndroidResource Include="Resources\drawable-mdpi\ic_taxi.png" />
     <AndroidResource Include="Resources\drawable-ldpi\ic_taxi.png" />
+    <AndroidResource Include="Resources\drawable-xxxhdpi\ic_search.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\ic_search.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_search.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_search.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\ic_search.png" />
+    <AndroidResource Include="Resources\drawable-ldpi\ic_search.png" />
+    <AndroidResource Include="Resources\drawable-xxxhdpi\ic_location.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\ic_location.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_location.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_location.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\ic_location.png" />
+    <AndroidResource Include="Resources\drawable-ldpi\ic_location.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\drawable\" />

@@ -12,7 +12,7 @@ namespace TrackingSample
         {
             InitializeComponent();
             GoogleMapsApiService.Initialize(Constants.GoogleMapsApiKey);
-            MainPage = new MainPage();
+            MainPage = new NavigationPage(new MainPage()) { BarTextColor=Color.Black};
         }
 
         protected override void OnStart()

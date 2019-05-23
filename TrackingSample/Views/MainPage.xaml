@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:vm="clr-namespace:TrackingSample.ViewModels"
+             xmlns:maps="clr-namespace:Xamarin.Forms.GoogleMaps;assembly=Xamarin.Forms.GoogleMaps"
+             x:Class="TrackingSample.MainPage" 
+             NavigationPage.BackButtonTitle=""
+             NavigationPage.HasNavigationBar="false"
+             CalculateCommand="{Binding CalculateRouteCommand}"
+             UpdateCommand="{Binding UpdatePositionCommand}">
+    <ContentPage.BindingContext>
+        <vm:MainViewModel/>
+    </ContentPage.BindingContext>
+    <Grid>
+          <maps:Map x:Name="map"
+                    InitialCameraUpdate="40.77, -73.93, 13, 30, 60"
+                    VerticalOptions="FillAndExpand"
+                    HorizontalOptions="FillAndExpand"/>
+        
+           <StackLayout BackgroundColor="White"
+                        Orientation="Horizontal"
+                        VerticalOptions="Start"
+                        Padding="10"
+                        x:Name="searchLayout"
+                        Margin="30,50,30,0">
+                       <Image Source="ic_search"
+                              HeightRequest="15"
+                              WidthRequest="15"/>
+                       <Label HorizontalOptions="FillAndExpand"
+                              LineBreakMode="TailTruncation"
+                              FontAttributes="Italic"
+                              Text="Search Place"
+                              TextColor="Gray"/>
+                    <StackLayout.GestureRecognizers>
+                        <TapGestureRecognizer 
+                               Tapped="OnEnterAddressTapped" />
+                   </StackLayout.GestureRecognizers>
+           </StackLayout>
+        
+           <Button Text="Stop"
+                   Margin="40"
+                   Clicked="Handle_Stop_Clicked"
+                   IsVisible="false"
+                   x:Name="stopRouteButton"
+                   BackgroundColor="Red"
+                   TextColor="White"
+                   FontSize="17"
+                   VerticalOptions="EndAndExpand"
+                   HorizontalOptions="FillAndExpand"/>
+    </Grid>
+</ContentPage>

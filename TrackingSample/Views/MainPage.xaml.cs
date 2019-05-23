@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
+using TrackingSample.ViewModels;
+using TrackingSample.Views;
 using Xamarin.Forms;
 using Xamarin.Forms.GoogleMaps;
 
@@ -31,11 +34,12 @@ namespace TrackingSample
             InitializeComponent();
             CalculateCommand = new Command<List<Xamarin.Forms.GoogleMaps.Position>>(Calculate);
             UpdateCommand = new Command<Xamarin.Forms.GoogleMaps.Position>(Update);
+            
         }
   
         async void Update(Xamarin.Forms.GoogleMaps.Position position)
         {
-            if (map.Pins.Count == 1)
+            if (map.Pins.Count == 1 && map.Polylines!=null&& map.Polylines?.Count>1)
                 return;
 
             var cPin = map.Pins.FirstOrDefault();
@@ -46,8 +50,8 @@ namespace TrackingSample
                 cPin.Icon = BitmapDescriptorFactory.FromView(new Image() { Source = "ic_taxi.png", WidthRequest = 25, HeightRequest = 25 });
 
                 await map.MoveCamera(CameraUpdateFactory.NewPosition(new Position(position.Latitude, position.Longitude)));
-                var previousPosition = map.Polylines.FirstOrDefault().Positions.FirstOrDefault();
-                map.Polylines?.FirstOrDefault()?.Positions?.Remove(previousPosition);
+                var previousPosition = map?.Polylines?.FirstOrDefault()?.Positions?.FirstOrDefault();
+                map.Polylines?.FirstOrDefault()?.Positions?.Remove(previousPosition.Value);
             }
             else
             {
@@ -60,6 +64,8 @@ namespace TrackingSample
 
         void Calculate(List<Xamarin.Forms.GoogleMaps.Position> list)
         {
+            searchLayout.IsVisible = false;
+            stopRouteButton.IsVisible = true;
             map.Polylines.Clear();
             var polyline = new Xamarin.Forms.GoogleMaps.Polyline();
             foreach (var p in list)
@@ -91,5 +97,21 @@ namespace TrackingSample
             };
             map.Pins.Add(pin1);
         }
+
+        public async void OnEnterAddressTapped(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new SearchPlacePage() { BindingContext = this.BindingContext }, false);
+
+        }
+
+        public void Handle_Stop_Clicked(object sender, EventArgs e)
+        {
+            searchLayout.IsVisible = true;
+            stopRouteButton.IsVisible = false;
+            (this.BindingContext as MainViewModel).StopRouteCommand.Execute(null);
+            map.Polylines.Clear();
+            map.Pins.Clear();
+        }
+
     }
 }

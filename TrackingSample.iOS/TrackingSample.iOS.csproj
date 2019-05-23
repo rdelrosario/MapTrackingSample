@@ -170,5 +170,11 @@
     <BundleResource Include="Resources\ic_taxi%403x.png" />
     <BundleResource Include="Resources\ic_taxi%402x.png" />
     <BundleResource Include="Resources\ic_taxi.png" />
+    <BundleResource Include="Resources\ic_search%403x.png" />
+    <BundleResource Include="Resources\ic_search%402x.png" />
+    <BundleResource Include="Resources\ic_search.png" />
+    <BundleResource Include="Resources\ic_location%403x.png" />
+    <BundleResource Include="Resources\ic_location%402x.png" />
+    <BundleResource Include="Resources\ic_location.png" />
   </ItemGroup>
 </Project>

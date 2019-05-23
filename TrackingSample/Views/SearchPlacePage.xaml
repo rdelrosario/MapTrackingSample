@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core" 
+             ios:Page.UseSafeArea="true"
+             x:Class="TrackingSample.Views.SearchPlacePage">
+       <Grid VerticalOptions="FillAndExpand"
+              BackgroundColor="White"
+              RowSpacing="0"
+              ColumnSpacing="0">
+               <Grid.RowDefinitions>
+                  <RowDefinition Height="Auto"/>
+                  <RowDefinition Height="Auto"/>
+             <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+              </Grid.ColumnDefinitions>
+          
+             <StackLayout Grid.Row="0"  
+                             Padding="10"
+                             BackgroundColor="LightGray"
+                             Orientation="Horizontal">
+                        <Image Source="ic_search"
+                               HeightRequest="20"
+                               WidthRequest="20"/>
+                        <Entry Placeholder="Enter Pickup"
+                               FontSize="18"
+                               x:Name="originEntry"
+                               ClassId="origin"
+                               FontAttributes="Italic"
+                               TextChanged="Handle_TextChanged"
+                               ReturnType="Search"
+                               HorizontalOptions="FillAndExpand" />
+              </StackLayout>
+        
+              <StackLayout Grid.Row="1"
+                           Padding="10"
+                           BackgroundColor="LightGray"
+                           Orientation="Horizontal">
+                        <Image Source="ic_search"
+                               HeightRequest="20"
+                               WidthRequest="20"/>
+                        <Entry Placeholder="Where to?"
+                               FontSize="18"
+                               x:Name="destinationEntry"
+                               ClassId="destination"
+                               FontAttributes="Italic"
+                               TextChanged="Handle_TextChanged"
+                               ReturnType="Search"
+                               HorizontalOptions="FillAndExpand" />
+              </StackLayout>
+
+              <ListView VerticalOptions="FillAndExpand"
+                        BackgroundColor="Transparent"
+                        Grid.Row="2"
+                        Footer=""
+                        x:Name="list"
+                        ItemsSource="{Binding RecentPlaces}"
+                        HasUnevenRows="true"
+                        SeparatorColor="Gray"
+                        ItemTapped="Handle_ItemTapped"
+                        ios:ListView.SeparatorStyle="FullWidth">
+                    <ListView.Header>
+                        <StackLayout  x:Name="recentSearchText">
+                          <Label LineBreakMode="WordWrap"
+                                 FontAttributes="Bold"
+                                 Margin="20,10"
+                                 x:Name="recentSearch"
+                                 Text="History"/>
+                        </StackLayout>
+                  </ListView.Header>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <Grid Padding="15"
+                                      RowSpacing="2"
+                                      ColumnSpacing="15">
+                                
+                                    <Grid.RowDefinitions>
+                                          <RowDefinition Height="Auto"/>
+                                          <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                      <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>        
+                                      </Grid.ColumnDefinitions>
+                            
+                                      <Image Source="ic_location"
+                                             HeightRequest="20"
+                                             WidthRequest="20"
+                                             VerticalOptions="Start"
+                                             Grid.Row="0"
+                                             Grid.Column="0"
+                                             Grid.RowSpan="2"/>
+                                
+                                        <Label LineBreakMode="MiddleTruncation"
+                                               Text="{Binding StructuredFormatting.MainText}"
+                                               Grid.Row="0"
+                                               Grid.Column="1"/>
+                                            
+                                         <Label LineBreakMode="MiddleTruncation"
+                                                 Text="{Binding StructuredFormatting.SecondaryText}" 
+                                                 TextColor="Gray" 
+                                                 Grid.Row="1"
+                                                 Grid.Column="1"/>
+                                </Grid>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+          </Grid>
+</ContentPage>
