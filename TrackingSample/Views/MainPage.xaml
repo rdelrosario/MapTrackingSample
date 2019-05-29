@@ -40,6 +40,7 @@
            <Button Text="Stop"
                    Margin="40"
                    Clicked="Handle_Stop_Clicked"
+                   Command="{Binding StopRouteCommand}"
                    IsVisible="false"
                    x:Name="stopRouteButton"
                    BackgroundColor="Red"

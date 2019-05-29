@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
-using TrackingSample.ViewModels;
 using TrackingSample.Views;
 using Xamarin.Forms;
 using Xamarin.Forms.GoogleMaps;
@@ -108,7 +107,6 @@ namespace TrackingSample
         {
             searchLayout.IsVisible = true;
             stopRouteButton.IsVisible = false;
-            (this.BindingContext as MainViewModel).StopRouteCommand.Execute(null);
             map.Polylines.Clear();
             map.Pins.Clear();
         }
