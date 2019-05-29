@@ -18,6 +18,6 @@ Search Place Sample in Xamarin Forms
 <img width="300" height:"700" src="droidplace.gif" title="Android"/>
 </p>
 
-Blog post: [Place Searches in Google Maps on Xamarin Forms](http://www.xamboy.com)
+Blog post: [Google Maps Place Search in Xamarin Forms](http://www.xamboy.com/2019/05/29/google-maps-place-search-in-xamarin-forms/)
 
 
