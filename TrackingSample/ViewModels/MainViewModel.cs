@@ -21,36 +21,93 @@ namespace TrackingSample.ViewModels
         public ICommand StopRouteCommand { get; set; }
         IGoogleMapsApiService googleMapsApi = new GoogleMapsApiService();
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        bool _hasRouteRunning;
+        string _originLatitud;
+        string _originLongitud;
+        string _destinationLatitud;
+        string _destinationLongitud;
 
-        bool hasRouteRunning = false;
+        GooglePlaceAutoCompletePrediction _placeSelected;
+        public GooglePlaceAutoCompletePrediction PlaceSelected { get
+            {
+                return _placeSelected;
+            }
+            set
+            {
+                _placeSelected= value;
+                if (_placeSelected != null)
+                    GetPlaceDetailCommand.Execute(_placeSelected);
+            }
+        }
+        public ICommand FocusOriginCommand { get; set; }
+        public ICommand GetPlacesCommand { get; set; }
+        public ICommand GetPlaceDetailCommand { get; set; }
+
+        public ObservableCollection<GooglePlaceAutoCompletePrediction> Places { get; set; }
         public ObservableCollection<GooglePlaceAutoCompletePrediction> RecentPlaces { get; set; } = new ObservableCollection<GooglePlaceAutoCompletePrediction>();
-        public string OriginLatitud;
-        public string OriginLongitud;
-        public string DestinationLatitud;
-        public string DestinationLongitud;
-         
+
+        public bool ShowRecentPlaces { get; set; }
+        bool _isPickupFocused = true;
+
+        string _pickupText;
+        public string PickupText
+        {
+            get
+            {
+                return _pickupText;
+            }
+            set
+            {
+                _pickupText = value;
+                if (!string.IsNullOrEmpty(_pickupText))
+                {
+                    _isPickupFocused = true;
+                    GetPlacesCommand.Execute(_pickupText);
+                }
+            }
+        }
+
+        string _originText;
+        public string OriginText
+        {
+            get
+            {
+                return _originText;
+            }
+            set
+            {
+                _originText = value;
+                if (!string.IsNullOrEmpty(_originText))
+                {
+                    _isPickupFocused = false;
+                    GetPlacesCommand.Execute(_originText);
+                }
+            }
+        }
+
         public MainViewModel()
         {
             LoadRouteCommand = new Command(async () => await LoadRoute());
             StopRouteCommand = new Command(StopRoute);
+            GetPlacesCommand = new Command<string>(async (param) => await GetPlacesByName(param));
+            GetPlaceDetailCommand = new Command<GooglePlaceAutoCompletePrediction>(async (param) => await GetPlacesDetail(param));
         }
 
         public async Task LoadRoute()
         {
             var positionIndex = 1;
-            var googleDirection = await googleMapsApi.GetDirections(OriginLatitud, OriginLongitud, DestinationLatitud, DestinationLongitud);
+            var googleDirection = await googleMapsApi.GetDirections(_originLatitud, _originLongitud, _destinationLatitud, _destinationLongitud);
             if(googleDirection.Routes!=null && googleDirection.Routes.Count>0)
             {
                 var positions = (Enumerable.ToList(PolylineHelper.Decode(googleDirection.Routes.First().OverviewPolyline.Points)));
                 CalculateRouteCommand.Execute(positions);
 
-                hasRouteRunning = true;
+                _hasRouteRunning = true;
 
                 //Location tracking simulation
                 Device.StartTimer(TimeSpan.FromSeconds(1),() =>
                 {
-                    if(positions.Count>positionIndex && hasRouteRunning)
+                    if(positions.Count>positionIndex && _hasRouteRunning)
                     {
                         UpdatePositionCommand.Execute(positions[positionIndex]);
                         positionIndex++;
@@ -70,35 +127,64 @@ namespace TrackingSample.ViewModels
         }
         public void StopRoute()
         {
-            hasRouteRunning = false;
+            _hasRouteRunning = false;
         }
 
-        public async Task<List<GooglePlaceAutoCompletePrediction>> GetPlacesByName(string placeText)
+        public async Task GetPlacesByName(string placeText)
         {
-            var place = await googleMapsApi.GetPlaces(placeText);
-            return place.AutoCompletePlaces;
+            var places = await googleMapsApi.GetPlaces(placeText);
+            var placeResult= places.AutoCompletePlaces;
+            if (placeResult != null && placeResult.Count > 0)
+            {
+                Places = new ObservableCollection<GooglePlaceAutoCompletePrediction>(placeResult);
+            }
+
+            ShowRecentPlaces = (placeResult == null || placeResult.Count ==0);
         }
 
-        public async Task<GooglePlace> GetPlacesDetail(GooglePlaceAutoCompletePrediction placeA, string route)
+        public async Task GetPlacesDetail(GooglePlaceAutoCompletePrediction placeA)
         {
             var place = await googleMapsApi.GetPlaceDetails(placeA.PlaceId);
             if (place != null)
             {
-                if (route == "origin")
+                if (_isPickupFocused)
                 {
-                    OriginLatitud = $"{place.Latitude}";
-                    OriginLongitud = $"{place.Longitude}";
+                    PickupText = place.Name;
+                    _originLatitud = $"{place.Latitude}";
+                    _originLongitud = $"{place.Longitude}";
+                    _isPickupFocused = false;
+                    FocusOriginCommand.Execute(null);
                 }
                 else
                 {
-                    DestinationLatitud = $"{place.Latitude}";
-                    DestinationLongitud = $"{place.Longitude}";
+                    _destinationLatitud = $"{place.Latitude}";
+                    _destinationLongitud = $"{place.Longitude}";
 
                     RecentPlaces.Add(placeA);
+
+                    if (_originLatitud == _destinationLatitud && _originLongitud == _destinationLongitud)
+                    {
+                        await App.Current.MainPage.DisplayAlert("Error", "Origin route should be different than destination route", "Ok");
+                    }
+                    else
+                    {
+                        LoadRouteCommand.Execute(null);
+                        await App.Current.MainPage.Navigation.PopAsync(false);
+                        CleanFields();
+                    }
+                  
                 }
             }
-            return place;
         }
+
+        void CleanFields()
+        {
+            PickupText = OriginText = string.Empty;
+            ShowRecentPlaces = true;
+            PlaceSelected = null;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
     }
 }

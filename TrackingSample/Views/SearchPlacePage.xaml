@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core" 
              ios:Page.UseSafeArea="true"
-             x:Class="TrackingSample.Views.SearchPlacePage">
+             x:Class="TrackingSample.Views.SearchPlacePage"
+             FocusOriginCommand="{Binding FocusOriginCommand}">
        <Grid VerticalOptions="FillAndExpand"
               BackgroundColor="White"
               RowSpacing="0"
@@ -25,11 +26,11 @@
                                HeightRequest="20"
                                WidthRequest="20"/>
                         <Entry Placeholder="Enter Pickup"
+                               Text="{Binding PickupText}"
                                FontSize="18"
                                x:Name="originEntry"
                                ClassId="origin"
                                FontAttributes="Italic"
-                               TextChanged="Handle_TextChanged"
                                ReturnType="Search"
                                HorizontalOptions="FillAndExpand" />
               </StackLayout>
@@ -41,12 +42,12 @@
                         <Image Source="ic_search"
                                HeightRequest="20"
                                WidthRequest="20"/>
-                        <Entry Placeholder="Where to?"
+                        <Entry Placeholder="Where to?" 
+                               Text="{Binding OriginText}"
                                FontSize="18"
                                x:Name="destinationEntry"
                                ClassId="destination"
                                FontAttributes="Italic"
-                               TextChanged="Handle_TextChanged"
                                ReturnType="Search"
                                HorizontalOptions="FillAndExpand" />
               </StackLayout>
@@ -55,14 +56,27 @@
                         BackgroundColor="Transparent"
                         Grid.Row="2"
                         Footer=""
+                        SelectedItem="{Binding PlaceSelected, Mode=TwoWay}"
                         x:Name="list"
-                        ItemsSource="{Binding RecentPlaces}"
+                        ItemsSource="{Binding Places}"
                         HasUnevenRows="true"
                         SeparatorColor="Gray"
-                        ItemTapped="Handle_ItemTapped"
                         ios:ListView.SeparatorStyle="FullWidth">
+                     <ListView.Triggers>
+                        <DataTrigger TargetType="ListView"
+                                 Binding="{Binding ShowRecentPlaces}"
+                                 Value="True">
+                            <Setter Property="ItemsSource" Value="{Binding RecentPlaces}" />
+                        </DataTrigger>
+                        <DataTrigger TargetType="ListView"
+                                 Binding="{Binding ShowRecentPlaces}"
+                                 Value="False">
+                            <Setter Property="ItemsSource" Value="{Binding Places}" />
+                        </DataTrigger>
+                    </ListView.Triggers>
                     <ListView.Header>
-                        <StackLayout  x:Name="recentSearchText">
+                        <StackLayout  x:Name="recentSearchText"
+                                      IsVisible="{Binding ShowRecentPlaces}">
                           <Label LineBreakMode="WordWrap"
                                  FontAttributes="Bold"
                                  Margin="20,10"

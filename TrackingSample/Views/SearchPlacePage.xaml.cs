@@ -1,69 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using TrackingSample.Models;
-using TrackingSample.ViewModels;
+﻿using System.Windows.Input;
 using Xamarin.Forms;
 
 namespace TrackingSample.Views
 {
     public partial class SearchPlacePage : ContentPage
     {
+        public static readonly BindableProperty FocusOriginCommandProperty =
+           BindableProperty.Create(nameof(FocusOriginCommand), typeof(ICommand), typeof(SearchPlacePage), null, BindingMode.TwoWay);
+
+        public ICommand FocusOriginCommand
+        {
+            get { return (ICommand)GetValue(FocusOriginCommandProperty); }
+            set { SetValue(FocusOriginCommandProperty, value); }
+        }
+
         public SearchPlacePage()
         {
             InitializeComponent();
         }
 
-        public async void Handle_TextChanged(object sender, TextChangedEventArgs e)
+        protected override void OnBindingContextChanged()
         {
-            if(sender is Entry entry)
+            base.OnBindingContextChanged();
+            if (BindingContext != null)
             {
-                //To detect if the entry is from origin or destination
-                list.ClassId = entry.ClassId;
-
-                var places = await (this.BindingContext as MainViewModel).GetPlacesByName(entry.Text);
-                if (places != null && places.Count > 0)
-                {
-                    list.ItemsSource = places;
-                    list.Header = null;
-                }
-                else
-                {
-                    list.ItemsSource = (this.BindingContext as MainViewModel).RecentPlaces;
-                    list.Header = recentSearchText;
-                }
+                FocusOriginCommand = new Command(OnOriginFocus);
             }
         }
 
-        public async void Handle_ItemTapped(object sender, ItemTappedEventArgs e)
+        void OnOriginFocus()
         {
-            if (sender is Xamarin.Forms.ListView list && e.Item is GooglePlaceAutoCompletePrediction item && this.BindingContext is MainViewModel viewmodel)
-            {
-                var place = await viewmodel.GetPlacesDetail(item, list.ClassId);
-
-                if (list.ClassId == "origin" || list.ClassId==null)
-                {
-                    originEntry.Text = place.Name;
-                    list.ClassId = "destination";
-                    Device.BeginInvokeOnMainThread(() =>
-                    {
-                        destinationEntry.Focus();
-                    });
-                }
-                else
-                {
-                    if (viewmodel.OriginLatitud == viewmodel.DestinationLatitud && viewmodel.OriginLongitud == viewmodel.DestinationLongitud)
-                    {
-                        await App.Current.MainPage.DisplayAlert("Error", "Origin route should be different than destination route", "Ok");
-                    }
-                    else
-                    {
-                        viewmodel.LoadRouteCommand.Execute(null);
-                        await Navigation.PopAsync(false);
-                    }
-                   
-                }
-            }
+            destinationEntry.Focus();
         }
-
     }
 }
