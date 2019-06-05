@@ -22,5 +22,6 @@
     <Folder Include="Models\" />
     <Folder Include="Helpers\" />
     <Folder Include="Views\" />
+    <Folder Include="Controls\" />
   </ItemGroup>
 </Project>

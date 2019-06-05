@@ -21,3 +21,12 @@ Search Place Sample in Xamarin Forms
 Blog post: [Place Searches in Google Maps on Xamarin Forms](http://www.xamboy.com)
 
 
+Moving PIN in Xamarin Forms
+
+<p align="center">
+<img width="300" height:"700" src="movingpiniOS.gif" title="iOS"/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<img width="300" height:"700" src="movingpindrod.gif" title="Android"/>
+</p>
+
+Blog post: [Moving pin in Google Maps on Xamarin Forms](http://www.xamboy.com)
