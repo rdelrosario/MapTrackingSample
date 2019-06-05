@@ -21,7 +21,7 @@ Search Place Sample in Xamarin Forms
 Blog post: [Place Searches in Google Maps on Xamarin Forms](http://www.xamboy.com)
 
 
-Moving PIN in Xamarin Forms
+Setting pick-up location marker using Google Maps in Xamarin Forms
 
 <p align="center">
 <img width="300" height:"700" src="movingpiniOS.gif" title="iOS"/>
@@ -29,4 +29,4 @@ Moving PIN in Xamarin Forms
 <img width="300" height:"700" src="movingpindrod.gif" title="Android"/>
 </p>
 
-Blog post: [Moving pin in Google Maps on Xamarin Forms](http://www.xamboy.com)
+Blog post: [Setting pick-up location marker using Google Maps in Xamarin Forms](http://www.xamboy.com/2019/06/05/setting-pick-up-location-marker-using-google-maps-in-xamarin-forms/)
