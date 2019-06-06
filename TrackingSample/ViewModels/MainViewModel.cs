@@ -2,17 +2,20 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TrackingSample.Helpers;
 using TrackingSample.Models;
 using TrackingSample.Services;
+using Xamarin.Essentials;
 using Xamarin.Forms;
+using Xamarin.Forms.GoogleMaps;
 
 namespace TrackingSample.ViewModels
 {
-    public class MainViewModel: INotifyPropertyChanged
+    public class MainViewModel : INotifyPropertyChanged
     {
         public ICommand CalculateRouteCommand { get; set; }
         public ICommand UpdatePositionCommand { get; set; }
@@ -21,7 +24,7 @@ namespace TrackingSample.ViewModels
         public ICommand StopRouteCommand { get; set; }
         IGoogleMapsApiService googleMapsApi = new GoogleMapsApiService();
 
-        bool _hasRouteRunning;
+        public bool HasRouteRunning { get; set; }
         string _originLatitud;
         string _originLongitud;
         string _destinationLatitud;
@@ -34,7 +37,7 @@ namespace TrackingSample.ViewModels
             }
             set
             {
-                _placeSelected= value;
+                _placeSelected = value;
                 if (_placeSelected != null)
                     GetPlaceDetailCommand.Execute(_placeSelected);
             }
@@ -85,12 +88,19 @@ namespace TrackingSample.ViewModels
             }
         }
 
+        public ICommand GetLocationNameCommand { get; set; }
+        public bool IsRouteNotRunning { get {
+            return !HasRouteRunning; 
+         } 
+         }
+
         public MainViewModel()
         {
             LoadRouteCommand = new Command(async () => await LoadRoute());
             StopRouteCommand = new Command(StopRoute);
             GetPlacesCommand = new Command<string>(async (param) => await GetPlacesByName(param));
             GetPlaceDetailCommand = new Command<GooglePlaceAutoCompletePrediction>(async (param) => await GetPlacesDetail(param));
+            GetLocationNameCommand = new Command<Position>(async (param) => await GetLocationName(param));
         }
 
         public async Task LoadRoute()
@@ -102,12 +112,12 @@ namespace TrackingSample.ViewModels
                 var positions = (Enumerable.ToList(PolylineHelper.Decode(googleDirection.Routes.First().OverviewPolyline.Points)));
                 CalculateRouteCommand.Execute(positions);
 
-                _hasRouteRunning = true;
+                HasRouteRunning = true;
 
                 //Location tracking simulation
                 Device.StartTimer(TimeSpan.FromSeconds(1),() =>
                 {
-                    if(positions.Count>positionIndex && _hasRouteRunning)
+                    if(positions.Count>positionIndex && HasRouteRunning)
                     {
                         UpdatePositionCommand.Execute(positions[positionIndex]);
                         positionIndex++;
@@ -127,7 +137,7 @@ namespace TrackingSample.ViewModels
         }
         public void StopRoute()
         {
-            _hasRouteRunning = false;
+            HasRouteRunning = false;
         }
 
         public async Task GetPlacesByName(string placeText)
@@ -182,6 +192,29 @@ namespace TrackingSample.ViewModels
             PickupText = OriginText = string.Empty;
             ShowRecentPlaces = true;
             PlaceSelected = null;
+        }
+
+
+        //Get place 
+        public async Task GetLocationName(Position position)
+        {
+            try
+            {
+                var placemarks = await Geocoding.GetPlacemarksAsync(position.Latitude, position.Longitude);
+                var placemark = placemarks?.FirstOrDefault();
+                if (placemark != null)
+                {
+                    PickupText = placemark.FeatureName;
+                }
+                else
+                {
+                    PickupText = string.Empty;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

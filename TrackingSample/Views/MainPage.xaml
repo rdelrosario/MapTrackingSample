@@ -7,15 +7,21 @@
              NavigationPage.BackButtonTitle=""
              NavigationPage.HasNavigationBar="false"
              CalculateCommand="{Binding CalculateRouteCommand}"
-             UpdateCommand="{Binding UpdatePositionCommand}">
+             UpdateCommand="{Binding UpdatePositionCommand}" >
     <ContentPage.BindingContext>
         <vm:MainViewModel/>
     </ContentPage.BindingContext>
     <Grid>
-          <maps:Map x:Name="map"
-                    InitialCameraUpdate="40.77, -73.93, 13, 30, 60"
+         <maps:Map x:Name="map"
                     VerticalOptions="FillAndExpand"
                     HorizontalOptions="FillAndExpand"/>
+        
+         <Image Source="ic_location_red.png"
+                 IsVisible="{Binding IsRouteNotRunning}"
+                 HeightRequest="35"
+                 WidthRequest="35"
+                 VerticalOptions="CenterAndExpand"
+                 HorizontalOptions="CenterAndExpand"/>
         
            <StackLayout BackgroundColor="White"
                         Orientation="Horizontal"
@@ -36,6 +42,19 @@
                                Tapped="OnEnterAddressTapped" />
                    </StackLayout.GestureRecognizers>
            </StackLayout>
+        
+           <Button Text="Choose Pickup"
+                   Margin="40"
+                   IsVisible="{Binding IsRouteNotRunning}"
+                   Clicked="OnEnterAddressTapped"
+                   Command="{Binding GetLocationNameCommand}"
+                   CommandParameter="{Binding Path=CameraPosition.Target,Source={x:Reference map}}"
+                   x:Name="chooseLocationButton"
+                   BackgroundColor="DodgerBlue"
+                   TextColor="White"
+                   FontSize="17"
+                   VerticalOptions="EndAndExpand"
+                   HorizontalOptions="FillAndExpand"/>
         
            <Button Text="Stop"
                    Margin="40"

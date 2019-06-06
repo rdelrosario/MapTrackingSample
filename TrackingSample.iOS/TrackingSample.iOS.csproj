@@ -176,5 +176,8 @@
     <BundleResource Include="Resources\ic_location%403x.png" />
     <BundleResource Include="Resources\ic_location%402x.png" />
     <BundleResource Include="Resources\ic_location.png" />
+    <BundleResource Include="Resources\ic_location_red%403x.png" />
+    <BundleResource Include="Resources\ic_location_red%402x.png" />
+    <BundleResource Include="Resources\ic_location_red.png" />
   </ItemGroup>
 </Project>

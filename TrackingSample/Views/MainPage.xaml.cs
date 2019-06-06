@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using TrackingSample.Views;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.GoogleMaps;
 
@@ -33,9 +35,10 @@ namespace TrackingSample
             InitializeComponent();
             CalculateCommand = new Command<List<Xamarin.Forms.GoogleMaps.Position>>(Calculate);
             UpdateCommand = new Command<Xamarin.Forms.GoogleMaps.Position>(Update);
-            
+            GetActualLocationCommand = new Command(async () => await GetActualLocation());
+           
         }
-  
+
         async void Update(Xamarin.Forms.GoogleMaps.Position position)
         {
             if (map.Pins.Count == 1 && map.Polylines!=null&& map.Polylines?.Count>1)
@@ -109,6 +112,42 @@ namespace TrackingSample
             stopRouteButton.IsVisible = false;
             map.Polylines.Clear();
             map.Pins.Clear();
+        }
+
+        //Center map in actual location 
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            GetActualLocationCommand.Execute(null);
+        }
+
+        public static readonly BindableProperty GetActualLocationCommandProperty =
+            BindableProperty.Create(nameof(GetActualLocationCommand), typeof(ICommand), typeof(MainPage), null, BindingMode.TwoWay);
+
+        public ICommand GetActualLocationCommand
+        {
+            get { return (ICommand)GetValue(GetActualLocationCommandProperty); }
+            set { SetValue(GetActualLocationCommandProperty, value); }
+        }
+
+        async Task GetActualLocation()
+        {
+            try
+            {
+                var request = new GeolocationRequest(GeolocationAccuracy.High);
+                var location = await Geolocation.GetLocationAsync(request);
+
+                if (location != null)
+                {
+                    map.MoveToRegion(MapSpan.FromCenterAndRadius(
+                        new Position(location.Latitude, location.Longitude), Distance.FromMiles(0.3)));
+
+                }
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", "Unable to get actual location", "Ok");
+            }
         }
 
     }
