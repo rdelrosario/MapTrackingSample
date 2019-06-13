@@ -24,4 +24,10 @@
     <Folder Include="Views\" />
     <Folder Include="Controls\" />
   </ItemGroup>
+  <ItemGroup>
+    <None Remove="MapStyle.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="MapStyle.json" />
+  </ItemGroup>
 </Project>

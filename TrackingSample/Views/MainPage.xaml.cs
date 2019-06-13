@@ -7,6 +7,7 @@ using TrackingSample.Views;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.GoogleMaps;
+using System.Reflection;
 
 namespace TrackingSample
 {
@@ -36,7 +37,20 @@ namespace TrackingSample
             CalculateCommand = new Command<List<Xamarin.Forms.GoogleMaps.Position>>(Calculate);
             UpdateCommand = new Command<Xamarin.Forms.GoogleMaps.Position>(Update);
             GetActualLocationCommand = new Command(async () => await GetActualLocation());
-           
+            AddMapStyle();
+        }
+
+        void AddMapStyle()
+        {
+            var assembly = typeof(MainPage).GetTypeInfo().Assembly;
+            var stream = assembly.GetManifestResourceStream($"TrackingSample.MapStyle.json");
+            string styleFile;
+            using (var reader = new System.IO.StreamReader(stream))
+            {
+                styleFile = reader.ReadToEnd();
+            }
+
+            map.MapStyle = MapStyle.FromJson(styleFile);
         }
 
         async void Update(Xamarin.Forms.GoogleMaps.Position position)
