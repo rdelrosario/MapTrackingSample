@@ -31,10 +31,10 @@ Setting pickup location marker using Google Maps in Xamarin Forms
 
 Blog post: [Setting pickup location marker using Google Maps in Xamarin Forms](http://www.xamboy.com/2019/06/05/setting-pickup-location-marker-using-google-maps-in-xamarin-forms/)
 
-Setting pickup location marker using Google Maps in Xamarin Forms
+Google map Styling in Xamarin Forms
 
 <p align="center">
-<img width="300" height:"700" src="SamplePhotos/mapstyle.png" title="mapStyle"/>
+<img width="700" src="SamplePhotos/mapstyle.png" title="mapStyle"/>
 </p>
 
 Blog post: [Google map Styling in Xamarin Forms](http://www.xamboy.com/)
