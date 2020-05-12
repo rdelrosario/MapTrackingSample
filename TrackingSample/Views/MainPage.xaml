@@ -2,19 +2,22 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
              xmlns:vm="clr-namespace:TrackingSample.ViewModels"
-             xmlns:maps="clr-namespace:Xamarin.Forms.GoogleMaps;assembly=Xamarin.Forms.GoogleMaps"
+             xmlns:controls="clr-namespace:TrackingSample.Controls"
              x:Class="TrackingSample.MainPage" 
              NavigationPage.BackButtonTitle=""
              NavigationPage.HasNavigationBar="false"
-             CalculateCommand="{Binding CalculateRouteCommand}"
-             UpdateCommand="{Binding UpdatePositionCommand}" >
+            >
     <ContentPage.BindingContext>
         <vm:MainViewModel/>
     </ContentPage.BindingContext>
     <Grid>
-         <maps:Map x:Name="map"
+         <controls:ExtendedMap x:Name="map"
                     VerticalOptions="FillAndExpand"
-                    HorizontalOptions="FillAndExpand"/>
+                    HorizontalOptions="FillAndExpand"
+                    OnCalculate="OnCalculate"
+                    OnLocationError="OnLocationError"
+                    CalculateCommand="{Binding CalculateRouteCommand}"
+                    UpdateCommand="{Binding UpdatePositionCommand}"/>
         
          <Image Source="ic_location_red.png"
                  IsVisible="{Binding IsRouteNotRunning}"
